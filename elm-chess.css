@@ -1,0 +1,67 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.chess-board {
+  display: flex;
+  margin: auto;
+  width: 100vmin;
+  height: 100vmin;
+  flex-flow: column-reverse nowrap;
+}
+
+.chess-row {
+  display: flex;
+  flex: 1;
+  flex-flow: row nowrap;
+}
+
+.chess-square {
+  background-color: #C78F54;
+  display: flex;
+  flex: 1;
+  font-size: 10vmin;
+  line-height: 10vmin;
+  align-items: center;
+  justify-content: center;
+}
+
+.chess-square--odd {
+  background-color: #F8D0A5;
+}
+
+.chess-piece {
+  position: relative;
+}
+
+.chess-piece::before {
+  content: attr(data-fill);
+  position: absolute;
+}
+
+.chess-piece--white::before {
+  color: white;
+}
+
+.chess-piece--black::before {
+  color: black;
+}
+
+.chess-piece::after {
+  content: attr(data-stroke);
+  color: #676767;
+  position: relative;
+}
+
+.chess-piece-text {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  left: -200vw;
+}
