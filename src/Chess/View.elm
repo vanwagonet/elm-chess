@@ -1,37 +1,59 @@
 module Chess.View where
 
 import Array exposing (Array, toList)
-import Html exposing (Html, Attribute, table, tr, td, span, text)
+import Html exposing (Html, Attribute, table, tr, td, span, div, text)
 import Html.Attributes exposing (attribute, class)
+import Html.Events exposing (onClick)
 
 import Chess.Action exposing (..)
 import Chess.Model exposing (..)
 
 view : Signal.Address Action -> Model -> Html
 view address model =
-  Array.indexedMap rowView model.board
-  |> toList
-  |> table [ class "chess-board" ]
+  let
+    className =
+      case model.turn of
+        White -> "chess-board chess-turn--white"
+        Black -> "chess-board chess-turn--black"
+  in
+    Array.indexedMap (rowView address model) model.board
+    |> toList
+    |> table [ class className ]
 
-rowView : Int -> Row -> Html
-rowView r row =
-  Array.indexedMap (cellView r) row
+rowView : Signal.Address Action -> Model -> Int -> Row -> Html
+rowView address model r row =
+  Array.indexedMap (cellView address model r) row
   |> toList
   |> tr [ class "chess-row" ]
 
-cellView : Int -> Int -> Cell -> Html
-cellView r c cell =
+cellView : Signal.Address Action -> Model -> Int -> Int -> Cell -> Html
+cellView address model r c cell =
   let
     children =
       case cell of
         Just piece -> pieceView piece
         Nothing -> []
-    className =
+    evenOdd =
       if (r - c) % 2 == 0
-      then "chess-square chess-square--even"
-      else "chess-square chess-square--odd"
+      then "even"
+      else "odd"
+    highlight = cellHighlight model cell r c
+    className = "chess-square"
+      ++ " chess-square--" ++ evenOdd
+      ++ " chess-square--" ++ highlight
   in
-    td [ class className ] children
+    td [ class className, onClick address (Click cell) ] children
+
+cellHighlight: Model -> Cell -> Int -> Int -> String
+cellHighlight model cell r c =
+  case cell of
+    Nothing -> "empty"
+    Just piece ->
+      case model.selected of
+        Nothing -> "occupied"
+        Just selected ->
+          if piece == selected then "selected"
+          else "occupied"
 
 pieceView : Piece -> List Html
 pieceView piece =

@@ -31,6 +31,15 @@ html, body {
   background-color: #F8D0A5;
 }
 
+.chess-square--selected {
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 100, 200, .5),
+    rgba(0, 100, 200, .5) 33%,
+    rgba(0, 100, 200, 0)
+  );
+}
+
 .chess-piece {
   position: relative;
 }
