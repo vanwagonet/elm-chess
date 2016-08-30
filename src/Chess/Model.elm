@@ -1,4 +1,4 @@
-module Chess.Model where
+module Chess.Model exposing (..)
 
 import Array exposing (Array, fromList)
 
@@ -35,10 +35,12 @@ type alias Move =
   , row: Int
   }
 
-model =
-  Model board White Nothing []
+initialModel : Model
+initialModel =
+  Model initialBoard White Nothing []
 
-board = fromList
+initialBoard : Board
+initialBoard = fromList
   [ fromList
     [ Just (Piece 1 White Rook)
     , Just (Piece 2 White Knight)

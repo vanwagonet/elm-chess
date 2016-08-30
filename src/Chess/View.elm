@@ -1,33 +1,33 @@
-module Chess.View where
+module Chess.View exposing (view)
 
 import Array exposing (Array, toList)
 import Html exposing (Html, Attribute, table, tr, td, span, div, text)
 import Html.Attributes exposing (attribute, class)
 import Html.Events exposing (onClick)
 
-import Chess.Action exposing (..)
+import Chess.Message exposing (..)
 import Chess.Model exposing (..)
 
-view : Signal.Address Action -> Model -> Html
-view address model =
+view : Model -> Html Message
+view model =
   let
     className =
       case model.turn of
         White -> "chess-board chess-turn--white"
         Black -> "chess-board chess-turn--black"
   in
-    Array.indexedMap (rowView address model) model.board
+    Array.indexedMap (rowView model) model.board
     |> toList
     |> table [ class className ]
 
-rowView : Signal.Address Action -> Model -> Int -> Row -> Html
-rowView address model r row =
-  Array.indexedMap (cellView address model r) row
+rowView : Model -> Int -> Row -> Html Message
+rowView model r row =
+  Array.indexedMap (cellView model r) row
   |> toList
   |> tr [ class "chess-row" ]
 
-cellView : Signal.Address Action -> Model -> Int -> Int -> Cell -> Html
-cellView address model r c cell =
+cellView : Model -> Int -> Int -> Cell -> Html Message
+cellView model r c cell =
   let
     children =
       case cell of
@@ -42,7 +42,7 @@ cellView address model r c cell =
       ++ " chess-square--" ++ evenOdd
       ++ " chess-square--" ++ highlight
   in
-    td [ class className, onClick address (Click cell) ] children
+    td [ class className, onClick (Click cell) ] children
 
 cellHighlight: Model -> Cell -> Int -> Int -> String
 cellHighlight model cell r c =
@@ -55,7 +55,7 @@ cellHighlight model cell r c =
           if piece == selected then "selected"
           else "occupied"
 
-pieceView : Piece -> List Html
+pieceView : Piece -> List (Html Message)
 pieceView piece =
   case piece.rank of
     Pawn ->
@@ -71,7 +71,7 @@ pieceView piece =
     King ->
       pieceSpan piece.color "♔" "♚"
 
-pieceSpan : Color -> String -> String -> List Html
+pieceSpan : Color -> String -> String -> List (Html Message)
 pieceSpan color whiteText blackText =
   let
     className =

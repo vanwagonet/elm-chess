@@ -1,10 +1,20 @@
-module Chess where
+module Chess exposing (main)
 
-import StartApp.Simple as StartApp
+import Html.App as App
 
-import Chess.Action exposing (update)
-import Chess.Model exposing (model)
+import Chess.Message exposing (Message, update)
+import Chess.Model exposing (Model, initialModel)
 import Chess.View exposing (view)
 
+init : ( Model, Cmd Message )
+init =
+  initialModel ! []
+
+main : Program Never
 main =
-  StartApp.start { model = model, view = view, update = update }
+  App.program
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = \_ -> Sub.none
+    }
